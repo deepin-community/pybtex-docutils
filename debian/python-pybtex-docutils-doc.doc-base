@@ -1,0 +1,9 @@
+Document: python-pybtex-docutils-doc
+Title: pybtex-docutils Documentation
+Author: Matthias C. M. Troffaes
+Abstract: This is the reference documentation for pybtex-docutils.
+Section: Programming/Python
+
+Format: HTML
+Index: /usr/share/doc/python-pybtex-docutils-doc/html/index.html
+Files: /usr/share/doc/python-pybtex-docutils-doc/html/*.html

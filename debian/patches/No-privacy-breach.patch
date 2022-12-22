@@ -1,0 +1,47 @@
+From: Ghislain Antony Vaillant <ghisvail@gmail.com>
+Date: Sat, 22 Jul 2017 22:35:23 +0100
+Subject: No privacy breach
+
+---
+ README.rst | 10 ----------
+ setup.py   |  2 +-
+ 2 files changed, 1 insertion(+), 11 deletions(-)
+
+diff --git a/README.rst b/README.rst
+index c388096..fc19508 100644
+--- a/README.rst
++++ b/README.rst
+@@ -1,8 +1,6 @@
+ pybtex-docutils
+ ===============
+ 
+-|imagegithub| |imagecodecov|
+-
+ A docutils backend for pybtex.
+ 
+ * Download: https://pypi.org/project/pybtex-docutils/#files
+@@ -10,11 +8,3 @@ A docutils backend for pybtex.
+ * Documentation: https://pybtex-docutils.readthedocs.io/
+ 
+ * Development: http://github.com/mcmtroffaes/pybtex-docutils/
+-
+-.. |imagegithub| image:: https://github.com/mcmtroffaes/pybtex-docutils/actions/workflows/python-package.yml/badge.svg
+-    :target: https://github.com/mcmtroffaes/pybtex-docutils/actions/workflows/python-package.yml
+-    :alt: github-ci
+-
+-.. |imagecodecov| image:: https://codecov.io/gh/mcmtroffaes/pybtex-docutils/branch/develop/graph/badge.svg
+-    :target: https://codecov.io/gh/mcmtroffaes/pybtex-docutils
+-    :alt: codecov
+diff --git a/setup.py b/setup.py
+index 4bbc202..3c7d790 100644
+--- a/setup.py
++++ b/setup.py
+@@ -7,7 +7,7 @@ def readfile(filename):
+         return stream.read().split("\n")
+ 
+ 
+-doclines = readfile("README.rst")[5:]  # skip badges
++doclines = readfile("README.rst")[3:]  # skip badges
+ requires = readfile("requirements.txt")
+ version = readfile("VERSION")[0].strip()
+ 
