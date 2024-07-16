@@ -20,13 +20,24 @@ as in the :ref:`minimal example <minimal-example>`.
    :show-inheritance:
    :members: RenderType, paragraph, citation, citation_reference,
              footnote, footnote_reference
+
+.. autoclass:: SimpleBibliography
+   :show-inheritance:
+   :members: run
 """
 
 import docutils.nodes
 import itertools
 
+import docutils.parsers.rst.directives as directives
+from docutils.parsers.rst import Directive
 from pybtex.backends import BaseBackend
+import pybtex.database
+import pybtex.plugin
+import os.path
 from typing import TYPE_CHECKING, List, Type
+
+from pybtex.database.input.bibtex import Parser
 
 if TYPE_CHECKING:
     from pybtex.style import FormattedEntry
@@ -36,9 +47,9 @@ class Backend(BaseBackend):
     name = 'docutils'
 
     symbols = {
-        'ndash': [docutils.nodes.Text('\u2013', '\u2013')],
-        'newblock': [docutils.nodes.Text(' ', ' ')],
-        'nbsp': [docutils.nodes.Text('\u00a0', '\u00a0')],
+        'ndash': [docutils.nodes.Text('\u2013')],
+        'newblock': [docutils.nodes.Text(' ')],
+        'nbsp': [docutils.nodes.Text('\u00a0')],
     }
     tags = {
         'emph': docutils.nodes.emphasis,  # note: deprecated
@@ -58,7 +69,7 @@ class Backend(BaseBackend):
         return self.format_str(text)
 
     def format_str(self, str_: str) -> List[docutils.nodes.Node]:
-        return [docutils.nodes.Text(str_, str_)]
+        return [docutils.nodes.Text(str_)]
 
     def format_tag(self, tag_name: str, text: List[docutils.nodes.Node]
                    ) -> List[docutils.nodes.Node]:
@@ -68,8 +79,8 @@ class Backend(BaseBackend):
         else:
             return text
 
-    def format_href(self, url: str, text: List[docutils.nodes.Node]
-                    ) -> List[docutils.nodes.Node]:
+    def format_href(self, url: str, text: List[docutils.nodes.Node],
+                    external: bool = False) -> List[docutils.nodes.Node]:
         node = docutils.nodes.reference('', '', *text, refuri=url)
         return [node]
 
@@ -163,3 +174,37 @@ class Backend(BaseBackend):
         document.note_autofootnote_ref(refnode)
         document.note_footnote_ref(refnode)
         return refnode
+
+
+class SimpleBibliography(Directive):
+    name = "simplebibliography"
+    required_arguments = 1
+    optional_arguments = 0
+    final_argument_whitespace = True
+    has_content = False
+    option_spec = {
+        'encoding': directives.unchanged,
+        'style': directives.unchanged,
+    }
+
+    def run(self):
+        parser = Parser(self.options.get("encoding", "utf-8-sig"))
+        for filename_raw in self.arguments[0].split():
+            filename = os.path.join(
+                os.path.dirname(self.state_machine.document['source']),
+                filename_raw)
+            if not os.path.isfile(filename):
+                raise self.error(f"could not open bibtex file {filename}")
+            else:
+                try:
+                    parser.parse_file(filename)
+                except pybtex.database.BibliographyDataError as exc:
+                    raise self.error(
+                        f"bibliography data error in {filename}: {exc}")
+        style = pybtex.plugin.find_plugin(
+            "pybtex.style.formatting", self.options.get("style", "unsrt"))()
+        backend = Backend()
+        document = self.state_machine.document
+        return [
+            backend.citation(style.format_entry(entry.key, entry), document)
+            for entry in style.sort(parser.data.entries.values())]
