@@ -1,3 +1,21 @@
+pybtex-docutils (1.0.2-1) unstable; urgency=medium
+
+  * Team upload.
+
+  [ Dmitry Shachnev ]
+  * New upstream release.
+    - Updates tests for docutils 0.18 (closes: #1013380).
+  * Update debian/watch to use tags instead of releases.
+  * Refresh No-privacy-breach.patch.
+  * Backport upstream commit to fix tests for older docutils versions.
+  * Fix built-using-field-on-arch-all-package Lintian warning.
+
+  [ Debian Janitor ]
+  * Remove constraints unnecessary since buster (oldstable):
+    + Build-Depends: Drop versioned constraint on dpkg-dev.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Sat, 03 Dec 2022 19:50:23 +0300
+
 pybtex-docutils (1.0.1-1) unstable; urgency=medium
 
   * Team upload.
